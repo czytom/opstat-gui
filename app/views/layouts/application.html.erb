@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>OpstatGui</title>
+  <%= stylesheet_link_tag    "application", :media => "all" %>
+  <%= javascript_include_tag "application" %>
+  <%= csrf_meta_tags %>
+</head>
+<body>
+  <div class="container">
+    <div class="navbar navbar-fixed-top">
+      <div class="navbar-inner">
+        <a class="brand" href="#">OPStat</a>
+        <div class="nav-collapse">
+          <ul class="nav">
+            <li><%= link_to "Hosts",hosts_path %></li>
+            <li><%= link_to "Plugins",plugins_path %></li>
+            <li><%= link_to "Contact Us" %></li>
+          </ul>
+<ul class="nav pull-right">
+        <% if user_signed_in? %>
+          <li><%= link_to "Profile", @user %></li>
+          <li><%= link_to "Logout", destroy_user_session_path, method: :delete %></li>
+        <% end %>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <%= yield %>
+  </div>
+</body>
+</html>

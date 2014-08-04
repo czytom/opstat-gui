@@ -1,0 +1,80 @@
+<% index = 0 %>
+<% @plugin.chart_data[:chart_data].each_pair do |interface, values| %> 
+<% index += 1 %>
+        <script type="text/javascript">
+            var chart;
+
+
+  	    var chartData<%=index%> = <%= values.to_json.html_safe %>;
+
+            AmCharts.ready(function () {
+                // SERIAL CHART
+                chart = new AmCharts.AmSerialChart();
+                chart.pathToImages = "/assets/amcharts/";
+                chart.zoomOutButton = {
+                    backgroundColor: '#000000',
+                    backgroundAlpha: 0.15
+                };
+                chart.dataProvider = chartData<%=index%>;
+                chart.categoryField = "year";
+                chart.addTitle("Traffic on interface: <%= interface %>", 15);
+
+                // AXES
+                // Category
+                var categoryAxis = chart.categoryAxis;
+                categoryAxis.parseDates = true; // in order char to understand dates, we should set parseDates to true
+                categoryAxis.minPeriod = "ss"; // as we have data with minute interval, we have to set "mm" here.			 
+                categoryAxis.gridAlpha = 0.07;
+                categoryAxis.axisColor = "#DADADA";
+                categoryAxis.startOnAxis = true;
+
+                // Value
+                var valueAxis = new AmCharts.ValueAxis();
+//                valueAxis.stackType = "regular"; // this line makes the chart "stacked"
+                valueAxis.gridAlpha = 0.07;
+                valueAxis.title = "<%= @plugin.axes_properties[:value_axis][:title] %>";
+                chart.addValueAxis(valueAxis);
+
+                // GRAPHS
+                var graph = new AmCharts.AmGraph();
+		<% @plugin.graphs_properties.each do |graph| %>
+                graph = new AmCharts.AmGraph();
+                graph.type = "line";
+                graph.title = "<%= graph[:title] %>";
+                graph.valueField = "<%= graph[:value_field] %>";
+		graph.lineColor = "<%= graph[:line_color] %>";
+                graph.hidden = <%= graph[:hidden] %>;
+  		graph.lineThickness = <%= graph[:line_thickness] %>;
+                graph.lineAlpha = 1;
+                graph.fillAlphas = 0.5;
+                chart.addGraph(graph);
+		<% end %>
+
+                // LEGEND
+                var legend = new AmCharts.AmLegend();
+                legend.position = "top";
+                chart.addLegend(legend);
+
+		//SCROLLBAR
+                var chartScrollbar = new AmCharts.ChartScrollbar();
+                chartScrollbar.graph = graph;
+                chartScrollbar.scrollbarHeight = 30;
+                chartScrollbar.color = "#FFFFFF";
+                chartScrollbar.graphType = "step";
+                chartScrollbar.autoGridCount = true;
+                chart.addChartScrollbar(chartScrollbar);
+                // CURSOR
+                var chartCursor = new AmCharts.ChartCursor();
+                chartCursor.cursorPosition = "mouse";
+                chartCursor.categoryBalloonDateFormat = "YYYY:MM:DD, HH:NN:SS";
+                chartCursor.zoomable = true; // as the chart displayes not too many values, we disabled zooming
+                chartCursor.cursorAlpha = 0;
+                chart.addChartCursor(chartCursor);
+
+                // WRITE
+                chart.write("chartdiv_<%=index%>");
+            });
+        </script>
+    
+        <div id="chartdiv_<%=index%>" style="width:100%; height:400px;"></div>
+<% end %>

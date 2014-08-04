@@ -1,0 +1,11 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  plugin: MyString
+  updated_at: 2013-03-28 21:11:29
+  ip_address: MyString
+
+two:
+  plugin: MyString
+  updated_at: 2013-03-28 21:11:29
+  ip_address: MyString

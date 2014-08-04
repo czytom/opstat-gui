@@ -1,0 +1,5 @@
+<% @plugin.chart_data[:facter_data].each_pair do |key, value| %>
+  <div>
+    <%= "#{key}  => #{value}" %>
+  </div>
+<% end %>

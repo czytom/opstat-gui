@@ -1,0 +1,100 @@
+<% index = 0 %>
+<% p @plugin.chart_data %>
+<% @plugin.chart_data[:chart_data].each_pair do |pool, pool_data| %> 
+
+<% index += 1 %>
+        <script type="text/javascript">
+            var chart;
+
+
+  	    var chartData<%=index%> = <%= pool_data[:chart_data].to_json.html_safe %>;
+
+            AmCharts.ready(function () {
+                // SERIAL CHART
+                chart = new AmCharts.AmSerialChart();
+                chart.pathToImages = "/assets/amcharts/";
+                chart.zoomOutButton = {
+                    backgroundColor: '#000000',
+                    backgroundAlpha: 0.15
+                };
+                chart.dataProvider = chartData<%=index%>;
+                chart.categoryField = "year";
+                chart.addTitle("<%= pool %>", 15);
+
+                // AXES
+                // Category
+                var categoryAxis = chart.categoryAxis;
+                categoryAxis.parseDates = true; // in order char to understand dates, we should set parseDates to true
+                categoryAxis.minPeriod = "ss"; // as we have data with minute interval, we have to set "mm" here.			 
+                categoryAxis.gridAlpha = 0.07;
+                categoryAxis.axisColor = "#DADADA";
+                categoryAxis.startOnAxis = true;
+
+                // Value
+                var valueAxis1 = new AmCharts.ValueAxis();
+                valueAxis1.title = "<%= @plugin.axes_properties[:accepted_connections_per_sec][:value_axis][:title] %>";
+		valueAxis1.position = "right";
+                valueAxis1.gridAlpha = 0.07;
+                chart.addValueAxis(valueAxis1);
+
+                var valueAxis2 = new AmCharts.ValueAxis();
+		valueAxis2.position = "left";
+                valueAxis2.stackType = "regular"; // this line makes the chart "stacked"
+                valueAxis2.title = "<%= @plugin.axes_properties[:processes][:value_axis][:title] %>";
+                valueAxis2.gridAlpha = 0.07;
+    var guide1 = new AmCharts.Guide();
+    guide1.lineColor = "#FF0000";
+    guide1.value = <%= pool_data[:guides][:max_active_processes] %>;
+    guide1.lineAlpha = 1;
+    guide1.dashLength = 5;
+    guide1.lineThickness = 1;
+    
+    guide1.label = "Max active processes";
+    valueAxis2.addGuide(guide1);
+
+                chart.addValueAxis(valueAxis2);
+
+
+                // GRAPHS
+		<% @plugin.graphs_properties.each  do |properties| %>
+                graph = new AmCharts.AmGraph();
+		graph.valueAxis = <%= properties[:value_axis] %>;
+                graph.type = "line";
+		graph.lineColor = "<%= properties[:line_color] %>";
+                graph.title = "<%= properties[:title] %>";
+                graph.valueField = "<%= properties[:value_field] %>";
+                graph.lineAlpha = 1;
+                graph.lineThickness = "<%= properties[:line_thickness] %>";
+                graph.fillAlphas = "<%= properties[:fill_alphas] %>";
+                chart.addGraph(graph);
+		<% end %>
+
+
+                // LEGEND
+                var legend = new AmCharts.AmLegend();
+                legend.position = "top";
+                chart.addLegend(legend);
+
+		//SCROLLBAR
+                var chartScrollbar = new AmCharts.ChartScrollbar();
+                chartScrollbar.graph = graph;
+                chartScrollbar.scrollbarHeight = 30;
+                chartScrollbar.color = "#FFFFFF";
+                chartScrollbar.graphType = "step";
+                chartScrollbar.autoGridCount = true;
+                chart.addChartScrollbar(chartScrollbar);
+                // CURSOR
+                var chartCursor = new AmCharts.ChartCursor();
+                chartCursor.cursorPosition = "mouse";
+                chartCursor.categoryBalloonDateFormat = "YYYY:MM:DD, HH:NN:SS";
+                chartCursor.zoomable = true; // as the chart displayes not too many values, we disabled zooming
+                chartCursor.cursorAlpha = 0;
+                chart.addChartCursor(chartCursor);
+
+                // WRITE
+                chart.write("chartdiv_<%=index%>");
+            });
+        </script>
+    
+        <div id="chartdiv_<%=index%>" style="width:100%; height:400px;"></div>
+<% end %>

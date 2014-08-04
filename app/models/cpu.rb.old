@@ -1,0 +1,30 @@
+class Cpu < ActiveRecord::Base
+  self.pluralize_table_names = false
+
+  def self.chart_data(options = {})
+    chart_data = {}
+    prev = nil
+
+#    self.find(:all,:order => "timestamp", :conditions => ['cpu_id = ? and timestamp >= ? and ip_address = ? and hostname = ?','cpu',options[:start], options[:ip_address], options[:hostname]]).each do |data|
+    self.find(:all,:order => "timestamp", :conditions => [' timestamp >= ? and ip_address = ? and hostname = ?',options[:start], options[:ip_address], options[:hostname]]).group_by{|u| u.cpu_id}.each_pair do |cpu, values|
+      prev = nil
+      chart_data[cpu] = []
+      values.each do |data|
+        if prev.nil? then
+          prev = data
+          next
+        end
+        chart_data[cpu] << {
+          "year" => data[:timestamp].to_i * 1000,
+          "system" => data[:system] - prev[:system],
+          "nice" => data[:nice] - prev[:nice],
+          "user" => data[:user] - prev[:user],
+          "idle" => data[:idle] - prev[:idle]
+        }
+        prev = data
+      end
+    end
+    { :chart_data => chart_data }
+  end
+
+end
