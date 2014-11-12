@@ -1,12 +1,11 @@
 class Memory
   include MongoMapper::Document
-  set_collection_name "opstat.parsers.memories"
+  set_collection_name "opstat.reports"
   key :timestamp, Time
   timestamps!
 
   def self.chart_data(options = {})
     charts = []
-    puts "wczytuje"
     charts << self.memory_chart(options)
     return charts
   end
@@ -34,8 +33,8 @@ class Memory
     graphs = [:used, :cached, :buffers, :free, :swap_used]
 
     #TODO - get fields from above DRY
-    memory_data[:graph_data] = Memory.where( {:timestamp => { :$gt => options[:start]}, :host_id => options[:host_id], :plugin_id => options[:plugin_id] }).fields(:used, :cached, :buffers, :swap_used, :free, :timestamp).all
-    puts "mam dane"
+    memory_data[:graph_data] = Memory.where( {:timestamp => { :$gt => options[:start].to_s}, :host_id => options[:host_id], :plugin_id => options[:plugin_id] }).fields(:used, :cached, :buffers, :swap_used, :free, :timestamp).all
+    p memory_data
     graphs.each do |graph|
       memory_data[:graphs] << { :value_axis => 'valueAxis1', :value_field => graph, :balloon_text => "[[title]]: ([[value]])", :line_thickness => 1, :line_alpha => 1, :fill_alphas => 0.8, :graph_type => 'line' }
     end
