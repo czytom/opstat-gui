@@ -36,8 +36,8 @@ class Load
     graphs = [ :load_1m, :load_5m, :load_15m ]
 
 #TODO cpu and here - sort by timestamp
-    # TODO why start_to_s
-    load_data[:graph_data] = Load.where( {:timestamp => { :$gt => options[:start].to_s}, :host_id => options[:host_id], :plugin_id => options[:plugin_id] }).fields(:load_1m, :load_5m, :load_15m, :timestamp).all
+    p options[:start].class
+    load_data[:graph_data] = Load.where( {:timestamp => { :$gt => options[:start]}, :host_id => options[:host_id], :plugin_id => options[:plugin_id] }).fields(:load_1m, :load_5m, :load_15m, :timestamp).all
     p options[:start]
     puts options[:start].class
     puts "LOAD DATA"

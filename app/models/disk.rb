@@ -11,17 +11,8 @@ class Disk
   end
 
   def self.all_disks_charts(options)
-    devices_data = {}
     charts = []
-    #p Disk.where( {:timestamp => { :$gt => options[:start].to_s}, :host_id => options[:host_id], :plugin_id => options[:plugin_id] }).fields(:timestamp, :block_used, :block_free, :mount).all
-    #prepare data
-    Disk.where( {:timestamp => { :$gt => options[:start].to_s}, :host_id => options[:host_id], :plugin_id => options[:plugin_id] }).fields(:timestamp, :block_used, :block_free, :disks).each do |data|
-      data[:disks].each do |disk|
-        devices_data[disk['device']] ||= []
-	devices_data[disk['device']] << { :timestamp => data[:timestamp], :block_used => disk["block_used"], :block_free => disk["block_free"]}
-      end
-    end
-    devices_data.each_pair do |mount, values|
+    Disk.where( {:timestamp => { :$gt => options[:start]}, :host_id => options[:host_id], :plugin_id => options[:plugin_id] }).fields(:timestamp, :block_used, :block_free, :mount).all.group_by{|u| u.mount}.each_pair do |mount, values|
       charts << self.disk_chart(mount, values)
     end
     return charts
@@ -32,7 +23,7 @@ class Disk
                :value_axes => [
 	                  { 
 			    :name => "valueAxis1",
-			    :title => "Disk space usage for #{mount}",
+			    :title => 'Disk space usage for #{mount}',
 			    :position => 'left',
 			    :min_max_multiplier => 1,
 			    :stack_type => 'regular',

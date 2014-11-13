@@ -70,7 +70,7 @@ class Cpu
   end
 
   def self.cpu_aggregate(options)
-    data = Cpu.all( { :timestamp => {:$gt => options[:start].to_s} , :host_id => options[:host_id], :plugin_id => options[:plugin_id]} )
+    data = Cpu.all( { :timestamp => {:$gt => options[:start]} , :host_id => options[:host_id], :plugin_id => options[:plugin_id]} )
     data
   end
 
