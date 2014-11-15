@@ -1,6 +1,6 @@
 class Temper
   include MongoMapper::Document
-  set_collection_name "opstat.parsers.tempers"
+  set_collection_name "opstat.reports"
   key :timestamp, Time
   timestamps!
 

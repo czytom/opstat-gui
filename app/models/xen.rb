@@ -1,6 +1,6 @@
 class Xen
   include MongoMapper::Document
-  set_collection_name "opstat.parsers.xens"
+  set_collection_name "opstat.reports"
   key :timestamp, Time
   timestamps!
 
@@ -31,12 +31,13 @@ class Xen
 	       :title_size => 20
 	     }
     graphs = []
-    Xen.where( 'timestamp >= :timestamp and ip_address = :ip_address and hostname = :hostname', {timestamp: options[:start].localtime, ip_address: options[:ip_address], hostname: options[:hostname]}).group('UNIX_TIMESTAMP(timestamp) div 60, machine').order(:timestamp).select('FROM_UNIXTIME((UNIX_TIMESTAMP(timestamp) div 60) *60,\'%Y-%m-%d %H:%i:%S\') as period_start, machine,max(memory) as memory').group_by{|u| u.period_start}.each_pair do |period_start, machines|
+    # TODO - why use periods in this query
+    Xen.where( 'timestamp >= :timestamp and ip_address = :ip_address and hostname = :hostname', {timestamp: options[:start], ip_address: options[:ip_address], hostname: options[:hostname]}).group('UNIX_TIMESTAMP(timestamp) div 60, domain').order(:timestamp).select('FROM_UNIXTIME((UNIX_TIMESTAMP(timestamp) div 60) *60,\'%Y-%m-%d %H:%i:%S\') as period_start, domain,max(memory) as memory').group_by{|u| u.period_start}.each_pair do |period_start, domains|
      tmp = { :year => period_start.to_datetime.to_i * 1000 }
      #TODO sort
-     machines.each do |machine|
-       tmp[machine.machine] = machine.memory
-       graphs << machine.machine  unless graphs.include?(machine.machine)
+     domains.each do |domain|
+       tmp[domain.domain] = domain.memory
+       graphs << domain.domain  unless graphs.include?(domain.domain)
      end
      memory[:graph_data] << tmp
    end

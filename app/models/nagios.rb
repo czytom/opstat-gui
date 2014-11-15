@@ -1,6 +1,6 @@
 class Nagios
   include MongoMapper::Document
-  set_collection_name "opstat.parsers.nagios"
+  set_collection_name "opstat.reports"
   key :timestamp, Time
   timestamps!
 
@@ -34,7 +34,6 @@ class Nagios
 
     #TODO - get fields from above DRY
     data[:graph_data] = Nagios.where( {:timestamp => { :$gt => options[:start]}, :host_id => options[:host_id], :plugin_id => options[:plugin_id] }).fields(:services_critical, :services_warning, :services_unknown, :services_ok, :timestamp).all
-    p data
     graphs.each do |graph|
       data[:graphs] << { :value_axis => 'valueAxis1', :value_field => graph, :balloon_text => "[[title]]: ([[value]])", :line_thickness => 1, :line_alpha => 1, :fill_alphas => 0.8, :graph_type => 'line' }
     end

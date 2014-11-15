@@ -1,6 +1,6 @@
 class Webobjects
   include MongoMapper::Document
-  set_collection_name "opstat.parsers.webobjects"
+  set_collection_name "opstat.reports"
   timestamps!
 
   def self.chart_data(options = {})
