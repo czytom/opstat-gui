@@ -1,6 +1,6 @@
 class Bsdnet
   include MongoMapper::Document
-  set_collection_name "opstat.parsers.bsdnets"
+  set_collection_name "opstat.reports"
   key :timestamp, Time
   timestamps!
 

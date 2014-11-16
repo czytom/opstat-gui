@@ -1,6 +1,6 @@
 class Apache2
   include MongoMapper::Document
-  set_collection_name "opstat.parsers.apache2s"
+  set_collection_name "opstat.reports"
   key :timestamp, Time
   timestamps!
 
@@ -12,20 +12,22 @@ class Apache2
 
   def self.all_vhosts_charts(options)
     charts = []
-    datas = Apache2.where( {:timestamp => { :$gt => options[:start]}, :host_id => options[:host_id], :plugin_id => options[:plugin_id] }).all
-    self.vhosts_requests_per_sec(datas)
+    stats = Apache2.where( {:timestamp => { :$gt => options[:start]}, :host_id => options[:host_id], :plugin_id => options[:plugin_id] }).all.group_by{|v| v.vhost_name}
+    charts = self.vhosts_requests_per_sec(stats)
     return charts
   end
 
-  def self.vhosts_request_per_sec(datas)
-    chart_data = {
+  def self.vhosts_requests_per_sec(stats)
+    charts = []
+    stats.each_pair do |vhost,data|
+      chart = {
                :value_axes => [
 	                  { 
 			    :name => "valueAxis1",
-			    :title => 'Request sent per second for #{vhost} vhost',
+	                    :title => "request sent per second",
 			    :position => 'left',
 			    :min_max_multiplier => 1,
-			    :stack_type => 'none',
+			    :stack_type => 'regular',
                             :include_guides_in_min_max => 'true',
 			    :grid_alpha => 0.1
 			  }
@@ -33,65 +35,58 @@ class Apache2
                :graph_data => [],
 	       :category_field => 'timestamp',
 	       :graphs => [],
-	       :title => "#{vhost}: request sent per second",
+               :title => "Request sent per second for #{vhost} vhost",
 	       :title_size => 20
 	     }
 
-    graphs = {
-      :request_sent_per_sec => { :line_color => '#0033FF' },
-    }
     
-    prev = nil
-    datas.each do |data|
       prev = {}
-      temp = {}
-      data[:vhosts].each do |value|
-        status = value[:status]
-        unless prev.has_key?(status) then
-          prev[status] = value 
-          next
-        end
+      statuses = {}
+      data.each do |vhost_data|
+        current = {:bytes_sent_per_sec => {}, :requests_per_sec => {}}
+        current[:bytes_sent_per_sec]['timestamp'] = vhost_data['timestamp'].to_i * 1000
+	statuses.keys.each do |s|
+          current[:bytes_sent_per_sec][s] = 0
+	end
+        current[:requests_per_sec]['timestamp'] = vhost_data['timestamp'].to_i * 1000
+        statuses.keys.each do |s|
+          current[:requests_per_sec][s] = 0
+	end
+        vhost_data['stats'].each_pair do |status, values|
+          statuses[status] = true
+          unless prev.has_key?(status) then
+            prev[status] = values
+	    prev[status]['timestamp'] = vhost_data['timestamp']
+            next
+          end
       
-        time_diff = value[:timestamp].to_i - prev[status][:timestamp].to_i
-          bytes_sent_per_sec = ((value[:bytes_sent] - prev[status][:bytes_sent])/time_diff.to_f).round(3)
-          requests_per_sec = ((value[:requests] - prev[status][:requests])/time_diff.to_f).round(3)
-	#Interpolation of no data intervals
-	if bytes_sent_per_sec < 0
-	  prev[status] = value
-	  next
-	end
+          time_diff = vhost_data['timestamp'].to_i - prev[status]['timestamp'].to_i
+          bytes_sent_per_sec = ((values["bytes_sent"] - prev[status]['bytes_sent'])/time_diff.to_f).round(3)
+          requests_per_sec = ((values['requests'] - prev[status]['requests'])/time_diff.to_f).round(3)
+	  #TODO Interpolation of no data intervals
+	  #TODO take into account requests also
+	  if bytes_sent_per_sec < 0
+	    prev[status] = values
+	    prev[status]['timestamp'] = vhost_data['timestamp']
+	    next
+	  end
        
-        chart_data[vhost] ||= {}
-        chart_data[vhost][:statuses] ||= {}
-        chart_data[vhost][:chart_data] ||= {}
 
-        temp[:bytes_sent_per_sec] ||= {}
-	unless temp[:bytes_sent_per_sec].has_key?(value[:timestamp])
-          temp[:bytes_sent_per_sec][value[:timestamp]] = {:year => value[:timestamp].to_i * 1000}
-	  chart_data[vhost][:statuses].keys.each do |s|
-            temp[:bytes_sent_per_sec][value[:timestamp]][s] = 0
-	  end
+          current[:bytes_sent_per_sec][status] = bytes_sent_per_sec 
+          current[:requests_per_sec][status] = requests_per_sec 
+	  prev[status] = values
+	  prev[status]['timestamp'] = vhost_data['timestamp']
 	end
-        temp[:requests_per_sec] ||= {}
-	unless temp[:requests_per_sec].has_key?(value[:timestamp])
-          temp[:requests_per_sec][value[:timestamp]] = {:year => value[:timestamp].to_i * 1000}
-	  chart_data[vhost][:statuses].keys.each do |s|
-            temp[:requests_per_sec][value[:timestamp]][s] = 0
-	  end
-	end
-        chart_data[vhost][:statuses][status] = true
-        temp[:bytes_sent_per_sec][value[:timestamp]][status] = bytes_sent_per_sec 
-        temp[:requests_per_sec][value[:timestamp]][status] = requests_per_sec 
-        prev[status] = value
+        chart[:graph_data] << current[:requests_per_sec]
       end
-      chart_data[vhost][:chart_data][:bytes_sent_per_sec] = temp[:bytes_sent_per_sec].values
-      chart_data[vhost][:chart_data][:requests_per_sec] = temp[:requests_per_sec].values
+      statuses.keys.sort.each do |status|
+	puts status
+	properties =  self.graphs_defaults.select{|a| a[:value_field] == status.to_s}.first
+        chart[:graphs] << { :value_axis => 'valueAxis1', :value_field => status.to_s, :line_color => properties[:line_color],  :balloon_text => "[[title]]: ([[value]])", :line_thickness => 1, :line_alpha => 1, :fill_alphas => 0.8, :graph_type => 'line' }
+      end
+      charts << chart
     end
-
-    graphs.each_pair do |graph, properties|
-      chart_data[:graphs] << { :value_axis => 'valueAxis1', :value_field => graph, :line_color => properties[:line_color],  :balloon_text => "[[title]]: ([[value]])", :line_thickness => 1, :line_alpha => 1, :fill_alphas => 0.1, :graph_type => 'line' }
-    end
-    chart_data
+    charts
   end
 
   def self.vhost_requests_chart(vhost, values)
@@ -125,67 +120,11 @@ class Apache2
       #TODO value_axis
       #TODO merge set values with default
       ##TODO sort by timestamp
-      chart_data[:graphs] << { :value_axis => 'valueAxis1', :value_field => graph, :line_color => properties[:line_color],  :balloon_text => "[[title]]: ([[percents]]%)", :line_thickness => 1, :line_alpha => 1, :fill_alphas => 0.1, :graph_type => 'line' }
+      chart_data[:graphs] << { :value_axis => 'valueAxis1', :value_field => graph, :line_color => properties[:line_color],  :balloon_text => "[[title]]: ([[value]])", :line_thickness => 1, :line_alpha => 1, :fill_alphas => 0.1, :graph_type => 'line' }
     end
     chart_data
   end
 
-  def self.chart_data_deprecated(options = {})
-    chart_data = {}
-    report_data = Hash.new
-
-
-
-    p options
-    Apache2.find(:all,:order => 'timestamp', :conditions => ['timestamp >= ? and ip_address = ? and hostname = ?',options[:start].localtime, options[:ip_address], options[:hostname]]).group_by{|u| u.vhost}.each_pair do |vhost, values|
-      prev = {}
-      temp = {}
-      values.each do |value|
-        status = value[:status]
-        unless prev.has_key?(status) then
-          prev[status] = value 
-          next
-        end
-      
-        time_diff = value[:timestamp].to_i - prev[status][:timestamp].to_i
-          bytes_sent_per_sec = ((value[:bytes_sent] - prev[status][:bytes_sent])/time_diff.to_f).round(3)
-          requests_per_sec = ((value[:requests] - prev[status][:requests])/time_diff.to_f).round(3)
-	#Interpolation of no data intervals
-	if bytes_sent_per_sec < 0
-	  prev[status] = value
-	  next
-	end
-       
-        chart_data[vhost] ||= {}
-        chart_data[vhost][:statuses] ||= {}
-        chart_data[vhost][:chart_data] ||= {}
-
-        temp[:bytes_sent_per_sec] ||= {}
-	unless temp[:bytes_sent_per_sec].has_key?(value[:timestamp])
-          temp[:bytes_sent_per_sec][value[:timestamp]] = {:year => value[:timestamp].to_i * 1000}
-	  chart_data[vhost][:statuses].keys.each do |s|
-            temp[:bytes_sent_per_sec][value[:timestamp]][s] = 0
-	  end
-	end
-        temp[:requests_per_sec] ||= {}
-	unless temp[:requests_per_sec].has_key?(value[:timestamp])
-          temp[:requests_per_sec][value[:timestamp]] = {:year => value[:timestamp].to_i * 1000}
-	  chart_data[vhost][:statuses].keys.each do |s|
-            temp[:requests_per_sec][value[:timestamp]][s] = 0
-	  end
-	end
-        chart_data[vhost][:statuses][status] = true
-        temp[:bytes_sent_per_sec][value[:timestamp]][status] = bytes_sent_per_sec 
-        temp[:requests_per_sec][value[:timestamp]][status] = requests_per_sec 
-        prev[status] = value
-      end
-      chart_data[vhost][:chart_data][:bytes_sent_per_sec] = temp[:bytes_sent_per_sec].values
-      chart_data[vhost][:chart_data][:requests_per_sec] = temp[:requests_per_sec].values
-    end
-    
-    { :chart_data => chart_data }
-  end
-  
   def self.graphs_defaults
     [
      { :value_field => "200",
@@ -193,11 +132,16 @@ class Apache2
        :line_color => "#00FF00",
        :line_thickness => 3,
        :title => "Status 200"},
+     { :value_field => "204",
+       :hidden => false,
+       :line_color => "#00FF66",
+       :line_thickness => 3,
+       :title => "Status 204"},
      { :value_field => "206",
        :hidden => false,
        :line_color => "#00FF88",
        :line_thickness => 3,
-       :title => "Status 200"},
+       :title => "Status 206"},
      { :value_field => "300",
        :hidden => false,
        :line_color => "#FFFF00",
