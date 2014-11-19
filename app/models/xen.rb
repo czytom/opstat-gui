@@ -67,19 +67,17 @@ class Xen
 	       :title_size => 20
 	     }
     graphs = []
-    Xen.where( {:timestamp => { :$gt => options[:start]}, :host_id => options[:host_id], :plugin_id => options[:plugin_id] }).each do |data|
-     tmp = { timestamp: data['timestamp'] }
-     #TODO sort
-     next if data['domains'].nil?
-     data['domains'].each do |domain|
-       tmp[domain['name']] = domain['memory']
-       graphs << domain['name']  unless graphs.include?(domain['name'])
-     end
-     memory[:graph_data] << tmp
-   end
-    graphs.each do |graph|
-      #TODO value_axis
-      memory[:graphs] << { :value_axis => 'valueAxis1', :value_field => graph, :balloon_text => "[[title]]: [[value]] KB", :line_thickness => 1, :line_alpha => 1, :fill_alphas => 1, :graph_type => 'line' }
+    all_stats = Xen.where( {:timestamp => { :$gt => options[:start]}, :host_id => options[:host_id], :plugin_id => options[:plugin_id] }).order(:timestamp).group_by{|u| u.domain}
+    tmp = {}
+    Xen.where( {:timestamp => { :$gt => options[:start]}, :host_id => options[:host_id], :plugin_id => options[:plugin_id] }).order(:timestamp).group_by{|u| u.domain}.each_pair do |domain,stats|
+      stats.each do |stat|
+        tmp[stat['timestamp']] ||= { 'timestamp' => stat['timestamp'] }
+        tmp[stat['timestamp']] = tmp[stat['timestamp']].merge!({ stat['domain'] => stat['memory']})
+      end
+    end
+    memory[:graph_data] = tmp.values
+    all_stats.keys.each do |domain|
+      memory[:graphs] << { :value_axis => 'valueAxis1', :value_field => domain, :balloon_text => "[[title]]: [[value]] KB", :line_thickness => 1, :line_alpha => 1, :fill_alphas => 1, :graph_type => 'line' }
     end
     memory
   end

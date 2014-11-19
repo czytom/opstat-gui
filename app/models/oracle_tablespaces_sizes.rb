@@ -1,6 +1,6 @@
 class OracleTablespacesSizes
   include MongoMapper::Document
-  set_collection_name "opstat.parsers.oracle_tablespaces_sizes"
+  set_collection_name "opstat.reports"
   key :timestamp, Time
   timestamps!
 

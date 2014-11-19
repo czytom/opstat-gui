@@ -1,6 +1,6 @@
 class OracleSessions
   include MongoMapper::Document
-  set_collection_name "opstat.parsers.oracle_sessions"
+  set_collection_name "opstat.reports"
   key :timestamp, Time
   timestamps!
 

@@ -1,6 +1,6 @@
 class OracleFrasSizes
   include MongoMapper::Document
-  set_collection_name "opstat.parsers.oracle_fras_sizes"
+  set_collection_name "opstat.reports"
   key :timestamp, Time
   timestamps!
 
