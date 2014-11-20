@@ -1,3 +1,6 @@
-class Host < ActiveRecord::Base
-  attr_accessible :ip_address, :name
+class Host
+  include MongoMapper::Document
+  set_collection_name "opstat.hosts"
+  many :plugins
+  timestamps!
 end

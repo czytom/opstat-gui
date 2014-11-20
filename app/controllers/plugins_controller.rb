@@ -3,36 +3,20 @@ class PluginsController < ApplicationController
   # GET /plugins.json
   def index
      
-    @client = Client.find_by_login('powermedia')
-    p @client
+    @plugins = Plugin.all.group_by{|u| u.name}
 
     respond_to do |format|
       format.html # index.html.erb
-      format.json { render json: @client }
+      format.json { render json: @plugins }
     end
   end
 
   # GET /plugins/1
   # GET /plugins/1.json
   def show
-    @client = Client.find_by_login('powermedia')
-    @plugin = @client.get_plugin(params[:id])
+    @plugin = Plugin.find(params[:id])
 
-    case params[:period]
-    when "last_hour"
-      start = Time.now - 3600
-    when "6h"
-      start = Time.now - (3600 * 6)
-    when "1d"
-      start = Time.now - (3600 * 24)
-    when "7d"
-      start = Time.now - (3600 * 24 * 7)
-    when "30d"
-      start = Time.now - (3600 * 24 * 7 * 30)
-    else
-      start = Time.now - 3600
-    end
-    @charts = @plugin.chart_data(start: start, host_id: @plugin.host.id, plugin_id: @plugin.id)
+    @charts = @plugin.chart_data(params)
 
     respond_to do |format|
       format.html # show.html.erb

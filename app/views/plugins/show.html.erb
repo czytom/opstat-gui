@@ -20,6 +20,7 @@
               plugins_path, :class => 'btn'  %>
 </div>
 
+<%= render "plugins/facts" if @plugin.name == 'facts'%>
 <%= render "plugins/universal" %>
 <div class="form-actions">
   <%= link_to t('.back', :default => t("helpers.links.back")),
