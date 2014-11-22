@@ -34,4 +34,10 @@ OpstatGui::Application.configure do
 
   # Expands the lines which load the assets
   config.assets.debug = true
+  OpstatGui::Application.config.middleware.use ExceptionNotification::Rack,
+    :email => {
+      :email_prefix => "[Exception] ",
+      :sender_address => %{"notifier" <notifier@optilabs.eu>},
+      :exception_recipients => %w{office@optilabs.eu}
+    }
 end
