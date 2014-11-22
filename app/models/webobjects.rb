@@ -10,29 +10,30 @@ class Webobjects
   end
 
   def self.all_applications_charts(options = {})
+    charts = []
+    Webobjects.where( { :timestamp => {:$gt => options[:start]} , :host_id => options[:host_id], :plugin_id => options[:plugin_id]} ).group_by{|u| u.application_name}.each_pair do |app, stats|
+      charts << self.application_charts(app,stats)
+    end
+    return charts.flatten
+  end
 
-
-
+  def self.application_charts(app,stats)
     prev = nil
     report_data = Hash.new
-
     @quant = 60
-
     chart_data = {}
     instances = Hash.new
-
-    #TODO order by timestamp
-    Webobjects.where( { :timestamp => {:$gt => options[:start]} , :host_id => options[:host_id], :plugin_id => options[:plugin_id]} ).each do |data|
-      instances[data[:instance]] ||= true
-      rounded_timestamp = data[:timestamp].to_i - ( data[:timestamp].to_i % @quant )
+    stats.each do |stat|
+      instances[stat[:instance]] ||= true
+      rounded_timestamp = stat[:timestamp].to_i - ( stat[:timestamp].to_i % @quant )
       report_data[:sessions] ||= Hash.new
       report_data[:transactions] ||= Hash.new
       report_data[:sessions][rounded_timestamp] ||= Hash.new
       report_data[:transactions][rounded_timestamp] ||= Hash.new
 
-      #TODO resolve problems with breaks in data series for each instance
-      report_data[:sessions][rounded_timestamp][data[:instance]] = data[:sessions] 
-      report_data[:transactions][rounded_timestamp][data[:instance]] = data[:transactions]
+      #TODO resolve problems with breaks in stat series for each instance
+      report_data[:sessions][rounded_timestamp][stat[:instance]] = stat[:sessions] 
+      report_data[:transactions][rounded_timestamp][stat[:instance]] = stat[:transactions]
     end
 
     prev = nil
@@ -53,7 +54,6 @@ class Webobjects
       end
       temp["timestamp"] = timestamp.to_i * 1000
       chart_data[:tps] << temp
-
       prev = { :timestamp =>  timestamp, :data_hash => data_hash }
     end
  
@@ -63,11 +63,28 @@ class Webobjects
       temp["timestamp"] = timestamp.to_i * 1000
       chart_data[:sessions] << temp
     end
-
-
-
-
-    tps = {
+    tps = self.tps_graph(app)
+    instances.keys.each do |graph|
+      #TODO value_axis
+      #TODO merge set values with default
+      ##TODO sort by timestamp
+      tps[:graphs] << { :value_axis => 'valueAxis1', :value_field => graph.to_s,  :balloon_text => "[[title]]: ([[value]])", :line_thickness => 1, :line_alpha => 1, :fill_alphas => 0.1, :graph_type => 'line' }
+    end
+    
+    sessions = sessions_graph(app)
+    instances.keys.each do |graph|
+      #TODO value_axis
+      #TODO merge set values with default
+      ##TODO sort by timestamp
+      sessions[:graphs] << { :value_axis => 'valueAxis1', :value_field => graph, :balloon_text => "[[title]]: ([[value]])", :line_thickness => 1, :line_alpha => 1, :fill_alphas => 0.1, :graph_type => 'line' }
+    end
+    sessions[:graph_data] = chart_data[:sessions]
+    tps[:graph_data] = chart_data[:tps]
+    [tps,sessions]
+  end
+    
+  def self.tps_graph(app)
+    return {
                :value_axes => [
 	                  { 
 			    :name => "valueAxis1",
@@ -82,18 +99,13 @@ class Webobjects
                :graph_data => [],
 	       :category_field => 'timestamp',
 	       :graphs => [],
-	       :title => "Transactions per second",
+               :title => "Transactions per sec - #{app} application",
 	       :title_size => 20
 	     }
+  end
 
-    instances.keys.each do |graph|
-      #TODO value_axis
-      #TODO merge set values with default
-      ##TODO sort by timestamp
-      tps[:graphs] << { :value_axis => 'valueAxis1', :value_field => graph.to_s,  :balloon_text => "[[title]]: ([[value]])", :line_thickness => 1, :line_alpha => 1, :fill_alphas => 0.1, :graph_type => 'line' }
-    end
-
-    sessions = {
+  def self.sessions_graph(app)
+    return {
                :value_axes => [
 	                  { 
 			    :name => "valueAxis1",
@@ -108,21 +120,11 @@ class Webobjects
                :graph_data => [],
 	       :category_field => 'timestamp',
 	       :graphs => [],
-	       :title => "Number of sessions",
+	       :title => "Number of sessions - #{app} application",
 	       :title_size => 20
 	     }
-
-    instances.keys.each do |graph|
-      #TODO value_axis
-      #TODO merge set values with default
-      ##TODO sort by timestamp
-      sessions[:graphs] << { :value_axis => 'valueAxis1', :value_field => graph, :balloon_text => "[[title]]: ([[value]])", :line_thickness => 1, :line_alpha => 1, :fill_alphas => 0.1, :graph_type => 'line' }
-    end
-    sessions[:graph_data] = chart_data[:sessions]
-    tps[:graph_data] = chart_data[:tps]
-    [tps,sessions]
   end
-    
+
   def self.axes_defaults
     {
       :sessions => {
