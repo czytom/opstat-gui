@@ -7,7 +7,7 @@ class Facts
 
   def self.chart_data(options = {})
     facter_data = {}
-    self.find(:all,:order => "timestamp desc", :conditions => [ 'timestamp >= ? and ip_address = ? and hostname = ?',options[:start], options[:ip_address], options[:hostname]]).each do |data|
+    self.where(:order => "timestamp desc", :conditions => [ 'timestamp >= ? and ip_address = ? and hostname = ?',options[:start], options[:ip_address], options[:hostname]]).order(:timetamp).all.each do |data|
       facter_data[data[:name]] ||= data[:value]
     end
     { :facter_data => facter_data }

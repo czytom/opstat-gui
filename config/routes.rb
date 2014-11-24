@@ -1,12 +1,13 @@
 OpstatGui::Application.routes.draw do
   get "users/show"
 
-    resources :hosts do
-      resources :plugins
-    end
-
-
-  resources :plugins
+  resources :hosts do
+    resources :plugins
+  end
+  match 'plugins/of_type/:plugin_type' => 'plugins#plugin_of_type', :as => 'plugin_of_type'
+  resources :plugins do
+    resources :hosts
+  end
   devise_for :users
   resources :users
 

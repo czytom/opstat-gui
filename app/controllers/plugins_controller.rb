@@ -3,7 +3,7 @@ class PluginsController < ApplicationController
   # GET /plugins.json
   def index
      
-    @plugins = Plugin.all.group_by{|u| u.name}
+    @plugins = Plugin.all.group_by{|u| u.type}
 
     respond_to do |format|
       format.html # index.html.erb
@@ -15,6 +15,7 @@ class PluginsController < ApplicationController
   # GET /plugins/1.json
   def show
     @plugin = Plugin.find(params[:id])
+    @host_plugins = Plugin.all(:host_id => @plugin.host_id)
 
     @charts = @plugin.chart_data(params)
 
@@ -81,6 +82,22 @@ class PluginsController < ApplicationController
     respond_to do |format|
       format.html { redirect_to plugins_url }
       format.json { head :no_content }
+    end
+  end
+
+  def plugin_of_type_old
+    @charts = []
+    @plugins = Plugin.where({:type => params[:plugin_type]}).all
+    @plugins.each do |plugin|
+      @charts << plugin.chart_data(params)[0]#they are returned as array so we need to get it from there
+    end
+  end
+  def plugin_of_type
+    @charts = Plugin.chart_data_of_type(params)
+
+    respond_to do |format|
+      format.html # show.html.erb
+      format.json { render json: @plugin }
     end
   end
 end

@@ -3,9 +3,9 @@
 </div>
 <div>
 <table class="table table-striped table-condensed">
-<% @plugins.each_pair do |name,plugins|%>
+<% @plugins.sort.map do |type,plugins|%>
     <tr>
-    <td> <span class='btn btn-info btn-mini'><%= name %></span> </td>
+    <td> <span class='btn btn-info btn-mini'><%= link_to type, plugin_of_type_path(type) %></span> </td>
     <td>
     <% plugins.sort_by{|u| u.host.hostname}.each do |plugin| %>
       <%= link_to plugin.host.hostname, plugin_path(plugin['_id']), class: 'btn btn-success btn-mini' %>

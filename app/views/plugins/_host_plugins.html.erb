@@ -1,0 +1,6 @@
+<div class="page-header">
+Plugins available on host:
+<% @host_plugins.each do |plugin| %> 
+  <%= link_to plugin.type, plugin_path(plugin['_id']), class: 'btn btn-success btn-mini' %>
+<% end %>
+</div>
