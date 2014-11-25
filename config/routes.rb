@@ -4,7 +4,7 @@ OpstatGui::Application.routes.draw do
   resources :hosts do
     resources :plugins
   end
-  match 'plugins/of_type/:plugin_type' => 'plugins#plugin_of_type', :as => 'plugin_of_type'
+  match 'plugins/of_type/:plugin_type' => 'plugins#plugin_of_type', :via => [:get], :as => 'plugin_of_type'
   resources :plugins do
     resources :hosts
   end

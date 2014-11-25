@@ -1,23 +1,21 @@
 source 'https://rubygems.org'
 
-gem 'rails', '3.2.13'
+gem 'rails', '4.0.12'
 
 gem 'mysql2'
 
 
 # Gems used only for assets and not required
 # in production environments by default.
-group :assets do
-  gem 'sass-rails',   '~> 3.2.3'
-  gem 'coffee-rails', '~> 3.2.1'
-  gem 'less-rails'
+gem 'sass-rails',   '~> 4.0'
+gem 'coffee-rails', '~> 4.0'
+gem 'less-rails'
 
-  # See https://github.com/sstephenson/execjs#readme for more supported runtimes
-   gem 'therubyracer', :platforms => :ruby
+# See https://github.com/sstephenson/execjs#readme for more supported runtimes
+ gem 'therubyracer', :platforms => :ruby
 
-  gem 'uglifier', '>= 1.0.3'
-  gem 'twitter-bootstrap-rails'
-end
+gem 'uglifier', '>= 1.0.3'
+gem 'twitter-bootstrap-rails'
 
 gem 'jquery-rails'
 
@@ -36,7 +34,7 @@ gem 'jquery-rails'
 # To use debugger
 # gem 'debugger'
 gem 'ruby-units'
-gem 'mongo_mapper'
+gem 'mongo_mapper', '>= 0.13.0.beta2'
 gem 'bson_ext'
 gem 'devise'
 gem 'thin'
