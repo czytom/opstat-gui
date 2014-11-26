@@ -7,7 +7,6 @@ class User
          :timeoutable, :validatable
 
   attr_accessible :name, :email, :password, :password_confirmation, :remember_me
-  key :password, String
   key :encrypted_password, String
   key :username, String
   key :email, String
