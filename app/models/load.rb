@@ -36,7 +36,7 @@ class Load
     graphs = [ :load_1m, :load_5m, :load_15m ]
 
 #TODO cpu and here - sort by timestamp
-    load_data[:graph_data] = Load.where( {:timestamp => { :$gt => options[:start]}, :host_id => options[:host_id], :plugin_id => options[:plugin_id] }).fields(:load_1m, :load_5m, :load_15m, :timestamp).order(:timetamp).all
+    load_data[:graph_data] = Load.where( {:timestamp => { :$gte => options[:start],:$lt => options[:end]}, :host_id => options[:host_id], :plugin_id => options[:plugin_id] }).fields(:load_1m, :load_5m, :load_15m, :timestamp).order(:timetamp).all
     graphs.each do |graph|
       #TODO value_axis
       load_data[:graphs] << { :value_axis => 'valueAxis1', :value_field => graph, :balloon_text => "[[title]]: ([[value]])", :line_thickness => 1, :line_alpha => 1, :fill_alphas => 0, :graph_type => 'line' }

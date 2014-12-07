@@ -12,7 +12,7 @@ class OracleTablespacesSizes
 
   def self.all_tablespaces_charts(options)
     charts = []
-    OracleTablespacesSizes.where( {:timestamp => { :$gt => options[:start]}, :host_id => options[:host_id], :plugin_id => options[:plugin_id] }).fields(:timestamp, :used, :free, :name).order(:timetamp).all.group_by{|u| u.name}.each_pair do |tablespace, values|
+    OracleTablespacesSizes.where( {:timestamp => { :$gte => options[:start],:$lt => options[:end]}, :host_id => options[:host_id], :plugin_id => options[:plugin_id] }).fields(:timestamp, :used, :free, :name).order(:timetamp).all.group_by{|u| u.name}.each_pair do |tablespace, values|
       charts << self.tablespace_chart(tablespace, values)
     end
     return charts

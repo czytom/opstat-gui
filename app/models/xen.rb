@@ -67,9 +67,9 @@ class Xen
 	       :title_size => 20
 	     }
     graphs = []
-    all_stats = Xen.where( {:timestamp => { :$gt => options[:start]}, :host_id => options[:host_id], :plugin_id => options[:plugin_id] }).order(:timestamp).group_by{|u| u.domain}
+    all_stats = Xen.where( {:timestamp => { :$gte => options[:start],:$lt => options[:end]}, :host_id => options[:host_id], :plugin_id => options[:plugin_id] }).order(:timestamp).group_by{|u| u.domain}
     tmp = {}
-    Xen.where( {:timestamp => { :$gt => options[:start]}, :host_id => options[:host_id], :plugin_id => options[:plugin_id] }).order(:timestamp).group_by{|u| u.domain}.each_pair do |domain,stats|
+    Xen.where( {:timestamp => { :$gte => options[:start],:$lt => options[:end]}, :host_id => options[:host_id], :plugin_id => options[:plugin_id] }).order(:timestamp).group_by{|u| u.domain}.each_pair do |domain,stats|
       stats.each do |stat|
         tmp[stat['timestamp']] ||= { 'timestamp' => stat['timestamp'] }
         tmp[stat['timestamp']] = tmp[stat['timestamp']].merge!({ stat['domain'] => stat['memory']})

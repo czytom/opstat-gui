@@ -38,7 +38,7 @@ class Bsdnet
     }
     
     #TODO - sort by date
-    datas = Bsdnet.where( {:timestamp => { :$gt => options[:start]}, :host_id => options[:host_id], :plugin_id => options[:plugin_id] }).order(:timetamp).all
+    datas = Bsdnet.where( {:timestamp => { :$gte => options[:start],:$lt => options[:end]}, :host_id => options[:host_id], :plugin_id => options[:plugin_id] }).order(:timetamp).all
     prev = nil
     datas.each do |data|
       if prev.nil?

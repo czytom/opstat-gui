@@ -11,7 +11,7 @@ class Webobjects
 
   def self.all_sensors_applications_charts(options = {})
     charts = []
-    Webobjects.where( { :timestamp => {:$gt => options[:start]} , :plugin_type => 'webobjects'} ).order(:timetamp).group_by{|u| u.application_name}.each_pair do |app, stats|
+    Webobjects.where( { :timestamp => {:$gte => options[:start],:$lt => options[:end]} , :plugin_type => 'webobjects'} ).order(:timetamp).group_by{|u| u.application_name}.each_pair do |app, stats|
       charts << self.application_charts(app,stats)
     end
     return charts.flatten
@@ -19,7 +19,7 @@ class Webobjects
 
   def self.all_applications_charts(options = {})
     charts = []
-    Webobjects.where( { :timestamp => {:$gt => options[:start]} , :host_id => options[:host_id], :plugin_id => options[:plugin_id]} ).order(:timetamp).group_by{|u| u.application_name}.each_pair do |app, stats|
+    Webobjects.where( { :timestamp => {:$gte => options[:start],:$lt => options[:end]} , :host_id => options[:host_id], :plugin_id => options[:plugin_id]} ).order(:timetamp).group_by{|u| u.application_name}.each_pair do |app, stats|
       charts << self.application_charts(app,stats)
     end
     return charts.flatten
