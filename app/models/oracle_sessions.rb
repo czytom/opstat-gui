@@ -35,7 +35,7 @@ class OracleSessions
       :free => {:line_color => '#00FF00' }
     }
     
-    chart_data[:graph_data] = OracleSessions.where( {:timestamp => { :$gt => options[:start]}, :host_id => options[:host_id], :plugin_id => options[:plugin_id] }).order(:timetamp).all
+    chart_data[:graph_data] = OracleSessions.where( {:timestamp => { :$gte => options[:start],:$lt => options[:end]}, :host_id => options[:host_id], :plugin_id => options[:plugin_id] }).order(:timetamp).all
 
     graphs.each_pair do |graph, properties|
       #TODO value_axis

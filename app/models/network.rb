@@ -14,7 +14,7 @@ class Network
 
   def self.all_interfaces_charts(options)
     charts = []
-    Network.where( {:timestamp => { :$gt => options[:start]}, :host_id => options[:host_id], :plugin_id => options[:plugin_id] }).order(:timetamp).all.group_by{|u| u.interface}.each_pair do |interface, values|
+    Network.where( {:timestamp => { :$gte => options[:start],:$lt => options[:end]}, :host_id => options[:host_id], :plugin_id => options[:plugin_id] }).order(:timetamp).all.group_by{|u| u.interface}.each_pair do |interface, values|
       charts << self.interface_chart(interface, values)
     end
     return charts

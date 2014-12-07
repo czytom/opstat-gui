@@ -12,7 +12,7 @@ class Apache2
 
   def self.all_vhosts_charts(options)
     charts = []
-    stats = Apache2.where( {:timestamp => { :$gt => options[:start]}, :host_id => options[:host_id], :plugin_id => options[:plugin_id] }).order(:timestamp).all.group_by{|v| v.vhost_name}
+    stats = Apache2.where( {:timestamp => { :$gte => options[:start],:$lt => options[:end]}, :host_id => options[:host_id], :plugin_id => options[:plugin_id] }).order(:timestamp).all.group_by{|v| v.vhost_name}
     charts = self.vhosts_requests_and_bytes_per_sec(stats)
     return charts
   end

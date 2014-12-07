@@ -11,7 +11,7 @@ class Fpm
 
   def self.fpms_charts(options = {})
     charts = []
-    Fpm.where( {:timestamp => { :$gt => options[:start]}, :host_id => options[:host_id], :plugin_id => options[:plugin_id] }).order(:timetamp).all.group_by{|u| u.pool}.each_pair do |pool, values|
+    Fpm.where( {:timestamp => { :$gte => options[:start],:$lt => options[:end]}, :host_id => options[:host_id], :plugin_id => options[:plugin_id] }).order(:timetamp).all.group_by{|u| u.pool}.each_pair do |pool, values|
       charts << self.fpm_chart(pool,values)
     end
     return charts

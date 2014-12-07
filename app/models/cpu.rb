@@ -70,7 +70,7 @@ class Cpu
   end
 
   def self.cpu_aggregate(options)
-    data = Cpu.where( { :timestamp => {:$gt => options[:start]} , :host_id => options[:host_id], :plugin_id => options[:plugin_id]} ).order(:timetamp).all
+    data = Cpu.where( { :timestamp => {:$gte => options[:start],:$lt => options[:end]} , :host_id => options[:host_id], :plugin_id => options[:plugin_id]} ).order(:timestamp).all
     data
   end
 
@@ -82,4 +82,4 @@ class Cpu
     []
   end
 end
-Cpu.ensure_index( [ [:timestamp, 1], [:hostname, 1] , [:ip_address,1], [:cpus, 1] ] )
+Cpu.ensure_index( [ [:timestamp, 1], [:host_id, 1] , [:plugin_id, 1]] )

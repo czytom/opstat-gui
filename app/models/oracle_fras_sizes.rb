@@ -14,7 +14,7 @@ class OracleFrasSizes
 
   def self.all_fras_charts(options)
     charts = []
-    OracleFrasSizes.where( {:timestamp => { :$gt => options[:start]}, :host_id => options[:host_id], :plugin_id => options[:plugin_id] }).fields(:timestamp, :used, :free, :path).order(:timetamp).all.group_by{|u| u.path}.each_pair do |path, values|
+    OracleFrasSizes.where( {:timestamp => { :$gte => options[:start],:$lt => options[:end]}, :host_id => options[:host_id], :plugin_id => options[:plugin_id] }).fields(:timestamp, :used, :free, :path).order(:timetamp).all.group_by{|u| u.path}.each_pair do |path, values|
       charts << self.fra_chart(path, values)
     end
     return charts

@@ -12,7 +12,7 @@ class Disk
 
   def self.all_disks_charts(options)
     charts = []
-    Disk.where( {:timestamp => { :$gt => options[:start]}, :host_id => options[:host_id], :plugin_id => options[:plugin_id] }).fields(:timestamp, :block_used, :block_free, :mount).order(:timetamp).all.group_by{|u| u.mount}.each_pair do |mount, values|
+    Disk.where( {:timestamp => { :$gte => options[:start],:$lt => options[:end]}, :host_id => options[:host_id], :plugin_id => options[:plugin_id] }).fields(:timestamp, :block_used, :block_free, :mount).order(:timetamp).all.group_by{|u| u.mount}.each_pair do |mount, values|
       charts << self.disk_chart(mount, values)
     end
     return charts
