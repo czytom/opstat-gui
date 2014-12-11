@@ -21,7 +21,7 @@ class PluginsController < ApplicationController
 
     respond_to do |format|
       format.html # show.html.erb
-      format.json { render json: @plugin }
+      format.json { render json: @charts }
     end
   end
 

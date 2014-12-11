@@ -1,0 +1,13 @@
+%div.row
+ %div.col-lg-12
+  %h2 Plugins' hosts
+  %table{:class => "table table-condensed table-responsive"}
+   -@plugins.sort.map do |type,plugins|
+    %tr.success
+     %td
+      = link_to type, plugin_of_type_path(type), style:'padding: 1px'
+     %td
+      -plugins.sort_by{|u| u.host.hostname}.each do |plugin|
+       = link_to plugin.host.hostname, plugin_path(plugin['_id']), style: 'padding: 1px;margin: 0 0 5px'
+       |
+

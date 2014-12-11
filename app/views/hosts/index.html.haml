@@ -1,0 +1,11 @@
+%div.row
+ %h2 Hosts' plugins
+ %table{:class => "table table-condensed table-responsive"}
+  -@hosts.sort_by{|h| h.hostname}.each do |host|
+   %tr.success
+    %td
+     = link_to host.hostname, host, style: 'padding: 1px;'
+    %td
+     -host.plugins.sort_by{|t| t.type}.reverse.each do |plugin|
+      = link_to plugin.type, host_plugin_path(host['_id'],plugin['_id']), style: 'padding: 1px;'
+      |

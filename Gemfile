@@ -15,7 +15,7 @@ gem 'less-rails'
  gem 'therubyracer', :platforms => :ruby
 
 gem 'uglifier', '>= 1.0.3'
-gem 'twitter-bootstrap-rails'
+gem 'twitter-bootstrap-rails',  :git => 'git://github.com/seyhunak/twitter-bootstrap-rails.git'
 
 gem 'jquery-rails'
 
@@ -41,3 +41,5 @@ gem 'thin'
 gem 'exception_notification'
 gem 'momentjs-rails'
 gem 'bootstrap-daterangepicker-rails'
+gem 'haml-rails'
+gem "font-awesome-rails"

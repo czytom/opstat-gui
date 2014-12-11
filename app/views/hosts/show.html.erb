@@ -1,11 +1,4 @@
 <div class="page-header">
-  <h1><%= @plugin.type %></h1>
-    <%= link_to raw("<i class='icon-time'></i> Last hour"), {:id => @plugin, :period => 'last_hour'},:class => 'btn btn-small' %>
-    <%= link_to raw("<i class='icon-time'></i> 6 hours"), {:id => @plugin, :period => '6h'},:class => 'btn btn-small' %>
-    <%= link_to raw("<i class='icon-time'></i> 1 day"), {:id => @plugin, :period => '1d'},:class => 'btn btn-small' %>
-    <%= link_to raw("<i class='icon-time'></i> 7 days"), {:id => @plugin, :period => '7d'},:class => 'btn btn-small' %>
-    <%= link_to raw("<i class='icon-time'></i> 30 days"), {:id => @plugin, :period => '30d'},:class => 'btn btn-small' %>
-</div>
 
 <dl class="dl-horizontal">
   <dt><strong> ip_address:</strong></dt>
