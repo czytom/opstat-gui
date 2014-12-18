@@ -1,14 +1,14 @@
 source 'https://rubygems.org'
 
-gem 'rails', '4.0.12'
+gem 'rails', '4.1.8'
 
 gem 'mysql2'
 
 
 # Gems used only for assets and not required
 # in production environments by default.
-gem 'sass-rails',   '~> 4.0'
-gem 'coffee-rails', '~> 4.0'
+gem 'sass-rails'
+gem 'coffee-rails'
 gem 'less-rails'
 
 # See https://github.com/sstephenson/execjs#readme for more supported runtimes
@@ -43,3 +43,4 @@ gem 'momentjs-rails'
 gem 'bootstrap-daterangepicker-rails'
 gem 'haml-rails'
 gem "font-awesome-rails"
+gem 'opstat-plugins', :git => 'git://github.com/czytom/opstat-plugins.git', :branch => '0.0.3'

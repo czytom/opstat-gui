@@ -16,7 +16,6 @@ class PluginsController < ApplicationController
   def show
     @plugin = Plugin.find(params[:id])
     @host_plugins = Plugin.all(:host_id => @plugin.host_id)
-
     @charts = @plugin.chart_data(params)
 
     respond_to do |format|

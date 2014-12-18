@@ -14,6 +14,12 @@ class HostsController < ApplicationController
   # GET /hosts/1.json
   def show
     @host = Host.find(params[:id])
+    @charts = []
+    @host.plugins.each do |plugin|
+      p plugin
+      next if plugin.type == 'facts'
+      @charts << plugin.chart_data(params)
+    end
 
     respond_to do |format|
       format.html # show.html.erb

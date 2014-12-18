@@ -1,13 +1,5 @@
 <div class="page-header">
 
-<dl class="dl-horizontal">
-  <dt><strong> ip_address:</strong></dt>
-  <dd><%= @plugin.host.ip_address %></dd>
-  <dt><strong> hostname:</strong></dt>
-  <dd><%= @plugin.host.hostname %></dd>
-  <dt><strong>plugin:</strong></dt>
-  <dd><%= @plugin.type %></dd>
-</dl>
 <div class="form-actions">
   <%= link_to t('.back', :default => t("helpers.links.back")),
               plugins_path, :class => 'btn'  %>

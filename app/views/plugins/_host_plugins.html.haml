@@ -1,0 +1,7 @@
+%div{class: 'panel panel-primary'}
+ %div.panel-heading
+  Plugins on host:
+ %div.panel-body
+  - @host_plugins.each do |plugin| 
+   = link_to plugin.type, plugin_path(plugin['_id'],:plugin => params['plugin'])
+   %br

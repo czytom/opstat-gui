@@ -9,6 +9,8 @@ class User
   attr_accessible :name, :email, :password, :password_confirmation, :remember_me
   key :password, String
   key :encrypted_password, String
+  key :reset_password_token, String
+  key :reset_password_sent_at, Time
   key :username, String
   key :email, String
   key :remember_created_at, Time

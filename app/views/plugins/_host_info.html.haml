@@ -1,0 +1,9 @@
+%div{:class => 'panel panel-primary'}
+ %div.panel-heading
+  machine info
+ %div.panel-body
+  %strong ip_address:
+  = @plugin.host.ip_address
+  %br
+  %strong hostname:
+  = @plugin.host.hostname

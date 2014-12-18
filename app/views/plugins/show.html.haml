@@ -1,26 +1,15 @@
 %div.row
- %div.col-lg-6
-  %dl.dl-horizontal
-   %dt.strong ip_address:
-   %dd= @plugin.host.ip_address
-   %dt.strong hostname:
-   %dd= @plugin.host.hostname
-   %dt.strong plugin:
-   %dd= @plugin.type
- %div.col-lg-6
-  %div{:class => 'input-group pull-right', :id => 'reportrange'}
-   =form_for(@plugin,:html=>{:class => 'input-group',:id=>'date_range_form'}, :method => 'get') do |f|
+ %div.col-md-3
+  %div{:class => 'input-group', :id => 'reportrange', :style => 'padding-top:10px'}
+   = form_for(@plugin,:html=>{:class => 'input-group',:id=>'date_range_form'}, :method => 'get') do |f|
     %span{:class=>"input-group-addon"}
      %i{:class => "fa fa-calendar fa-lg"}
-    = f.hidden_field :date_range_start, :class => 'form-control', :readonly => true
+    = f.text_field :date_range_start, :class => 'form-control', :readonly => true
     = f.text_field :date_range_end, :class => 'form-control', :readonly => true
-    %div{:class => "form-control"}
-%div.row
- %div.lg-col-12
+  = render "plugins/host_info"
   = render "plugins/host_plugins" 
+ %div.col-md-9
   = render "plugins/facts" if @plugin.type == 'facts'
-  %div.form-actions
-   = link_to t('.back', :default => t("helpers.links.back")), plugins_path, :class => 'btn'
   = render "plugins/universal"
   %div.form-actions
    = link_to t('.back', :default => t("helpers.links.back")), plugins_path, :class => 'btn'

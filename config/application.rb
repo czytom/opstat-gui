@@ -15,7 +15,8 @@ module OpstatGui
     # -- all .rb files in that directory are automatically loaded.
 
     # Custom directories with classes and modules you want to be autoloadable.
-    # config.autoload_paths += %W(#{config.root}/extras)
+#    config.autoload_paths += %W(#{config.root}/lib)
+#config.autoload_paths << Rails.root.join('lib')
 
     # Only load the plugins named here, in the order given (default is alphabetical).
     # :all can be used as a placeholder for all plugins not explicitly named.
@@ -53,6 +54,6 @@ config.active_record.time_zone_aware_attributes = false
 
     # Version of your assets, change this if you want to expire all your assets
     config.assets.version = '3.2'
-    config.action_mailer.default_url_options = { :host => "10.5.0.10:3001" }
+    config.action_mailer.default_url_options = { :host => "tandetny:3000" }
   end
 end
