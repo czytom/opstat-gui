@@ -1,5 +1,5 @@
 module Graphs
- module AreaNotStacked 
+ module AreaNotStackedChart
   def self.included(base)
     base.extend(ClassMethods)
   end
