@@ -66,7 +66,7 @@
 		graph.valueAxis = <%= properties[:value_axis] %>;
                 graph.type = "<%= properties[:graph_type] %>";
 		<%= "graph.lineColor = \"#{properties[:line_color]}\";".html_safe unless properties[:line_color].nil?%>
-                graph.title = "<%= properties[:value_field] %>";
+                graph.title = "<%= properties[:title] %>";
                 graph.valueField = "<%= properties[:value_field] %>";
                 graph.lineAlpha = <%= properties[:line_alpha] %>;
                 graph.lineThickness = <%= properties[:line_thickness] %>;

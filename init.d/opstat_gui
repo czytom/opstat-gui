@@ -1,0 +1,26 @@
+#!/sbin/runscript
+# GitLab init script for Gentoo Linux
+# see https://github.com/gitlabhq/gitlabhq/blob/master/doc/installation.md
+OPSTAT_BASE=/var/www/opstat
+OPSTAT_USER=apache
+depend() {
+need net 
+}
+
+start() {
+  ebegin "Starting opstat unicorn server"
+  start-stop-daemon --start \
+  --chdir "${OPSTAT_BASE}" \
+  --user "${OPSTAT_USER}" \
+  --pidfile "${OPSTAT_BASE}/shared/pids/unicorn.pid" \
+  --exec bundle -- exec unicorn_rails -c "${OPSTAT_BASE}/config/unicorn.rb" -E production -D
+  eend $?
+}
+stop() {
+  ebegin "Stopping opstat unicorn server"
+  start-stop-daemon --stop \
+  --chdir "${OPSTAT_BASE}" \
+  --user "${OPSTAT_USER}" \
+  --pidfile "${OPSTAT_BASE}/shared/pids/unicorn.pid"
+  eend $?
+}

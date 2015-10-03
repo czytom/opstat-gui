@@ -1,10 +1,10 @@
 source 'https://rubygems.org'
 
-gem 'rails', '4.1.8'
+gem 'rails', '4.2.4'
+gem 'unicorn'
 
-gem 'mysql2'
-
-
+#gem 'mysql2'
+gem 'mysql2', '~> 0.3.13'
 # Gems used only for assets and not required
 # in production environments by default.
 gem 'sass-rails'
@@ -16,7 +16,7 @@ gem 'less-rails'
 
 gem 'uglifier', '>= 1.0.3'
 gem 'twitter-bootstrap-rails',  :git => 'git://github.com/seyhunak/twitter-bootstrap-rails.git'
-
+#gem 'devise-mongo_mapper',  :git    => 'git://github.com/collectiveidea/devise-mongo_mapper'
 gem 'jquery-rails'
 
 # To use ActiveModel has_secure_password
@@ -42,5 +42,8 @@ gem 'exception_notification'
 gem 'momentjs-rails'
 gem 'bootstrap-daterangepicker-rails'
 gem 'haml-rails'
-gem "font-awesome-rails"
+gem 'font-awesome-rails'
 gem 'opstat-plugins', :git => 'git://github.com/czytom/opstat-plugins.git', :branch => '0.0.3'
+group :development do
+   gem 'web-console', '~> 2.0'
+end

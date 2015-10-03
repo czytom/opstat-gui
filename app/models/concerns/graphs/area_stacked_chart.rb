@@ -27,10 +27,10 @@ module Graphs
 
     self.graphs.each_pair do |graph, properties|
 
-      #TODO value_axis
-      #TODO merge set values with default
       ##TODO sort by timestamp
-      chart[:graphs] << { :value_axis => 'valueAxis1', :value_field => graph, :line_color => properties[:line_color],  :balloon_text => "[[title]]: ([[value]])", :line_thickness => 1, :line_alpha => 1, :fill_alphas => 0.1, :graph_type => 'line' }
+      chart_defaults = { :balloon_text => "[[title]]: ([[value]])", :line_thickness => 1, :line_alpha => 1, :fill_alphas => 0.1, :title => graph }
+      chart_base = { :value_axis => 'valueAxis1', :value_field => graph, :graph_type => 'line' }
+      chart[:graphs] << chart_defaults.merge(properties).merge(chart_base)
     end
     chart
    end

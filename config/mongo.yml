@@ -13,6 +13,6 @@ test:
 # set these environment variables on your prod server
 production:
   <<: *defaults
-  database: opstat_gui
-  username: <%= ENV['MONGO_USERNAME'] %>
-  password: <%= ENV['MONGO_PASSWORD'] %>
+  database: opstat_gui_development
+#  username: <%= ENV['MONGO_USERNAME'] %>
+#  password: <%= ENV['MONGO_PASSWORD'] %>
