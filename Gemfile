@@ -10,7 +10,7 @@ gem 'mysql2', '~> 0.3.13'
 gem 'sass-rails'
 gem 'coffee-rails'
 gem 'less-rails'
-
+gem 'mm-devise'
 # See https://github.com/sstephenson/execjs#readme for more supported runtimes
  gem 'therubyracer', :platforms => :ruby
 

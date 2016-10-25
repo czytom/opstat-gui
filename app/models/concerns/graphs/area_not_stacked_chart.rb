@@ -6,6 +6,7 @@ module Graphs
 
   module ClassMethods
    def chart_structure(properties)
+    properties['category_field'] ||= 'timestamp'
     chart = {
                :value_axes => [
 	                  { 
@@ -19,7 +20,7 @@ module Graphs
 			  }
 			],
                :graph_data => [],
-	       :category_field => 'timestamp',
+	       :category_field => properties['category_field'],
 	       :graphs => [],
 	       :title => properties[:title],
 	       :title_size => 20
@@ -30,7 +31,7 @@ module Graphs
       #TODO value_axis
       #TODO merge set values with default
       ##TODO sort by timestamp
-      chart[:graphs] << { :value_axis => 'valueAxis1', :value_field => graph, :line_color => properties[:line_color],  :balloon_text => "[[title]]: ([[value]])", :line_thickness => 1, :line_alpha => 1, :fill_alphas => 0.1, :graph_type => 'line' }
+      chart[:graphs] << { :value_axis => 'valueAxis1', :value_field => graph, :line_color => properties[:line_color],  :balloon_text => "[[title]]: ([[value]])", :line_thickness => 1, :line_alpha => 1, :fill_alphas => 0.1, :graph_type => 'line', :title => graph }
     end
     chart
    end

@@ -6,6 +6,7 @@ module Graphs
 
   module ClassMethods
    def chart_structure(properties)
+    properties['category_field'] ||= 'timestamp'
     chart = {
                :value_axes => [
 	                  { 
@@ -19,7 +20,7 @@ module Graphs
 			  }
 			],
                :graph_data => [],
-	       :category_field => 'timestamp',
+	       :category_field => properties['category_field'],
 	       :graphs => [],
 	       :title => properties[:title],
 	       :title_size => 20

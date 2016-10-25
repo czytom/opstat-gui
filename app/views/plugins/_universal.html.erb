@@ -6,6 +6,7 @@
             var chart<%= index %>;
   	    var chartData<%=index%> = <%= chart[:graph_data].to_json.html_safe %>;
 	    chartData<%=index%>.forEach(function(item, i) { chartData<%=index%>[i]['timestamp']  = new Date( item['timestamp']); });
+	    chartData<%=index%>.forEach(function(item, i) { chartData<%=index%>[i]['time']  = new Date( item['time']); });
 
             AmCharts.ready(function () {
                 // SERIAL CHART
