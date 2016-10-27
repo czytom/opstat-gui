@@ -125,6 +125,9 @@ GEM
     mime-types (2.6.1)
     mini_portile (0.6.2)
     minitest (5.8.0)
+    mm-devise (2.0)
+      devise (>= 1.2)
+      mongo_mapper (>= 0.9.0)
     momentjs-rails (2.10.3)
       railties (>= 3.1)
     mongo (1.12.3)
@@ -229,6 +232,7 @@ DEPENDENCIES
   haml-rails
   jquery-rails
   less-rails
+  mm-devise
   momentjs-rails
   mongo_mapper (>= 0.13.0.beta2)
   mysql2 (~> 0.3.13)

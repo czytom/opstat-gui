@@ -62,6 +62,7 @@
 
 
                 // GRAPHS
+		<% p chart[:graphs] %>
 		<% chart[:graphs].each  do |properties| %>
                 graph = new AmCharts.AmGraph();
 		graph.valueAxis = <%= properties[:value_axis] %>;
