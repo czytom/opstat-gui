@@ -4,8 +4,8 @@
    = form_for(@plugin,:html=>{:class => 'input-group',:id=>'date_range_form'}, :method => 'get') do |f|
     %span{:class=>"input-group-addon"}
      %i{:class => "fa fa-calendar fa-lg"}
-    = f.text_field :date_range_start, :class => 'form-control', :readonly => true
-    = f.text_field :date_range_end, :class => 'form-control', :readonly => true
+    = f.text_field :date_range_start, :class => 'form-control', :readonly => false
+    = f.text_field :date_range_end, :class => 'form-control', :readonly => false
   = render "plugins/host_info"
   = render "plugins/host_plugins" 
  %div.col-md-9

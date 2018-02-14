@@ -17,7 +17,7 @@ class PluginsController < ApplicationController
     @plugin = Plugin.find(params[:id])
     @host_plugins = Plugin.all(:host_id => @plugin.host_id)
     @charts = @plugin.chart_data(params)
-
+    
     respond_to do |format|
       format.html # show.html.erb
       format.json { render json: @charts }

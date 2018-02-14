@@ -54,6 +54,6 @@ config.active_record.time_zone_aware_attributes = false
 
     # Version of your assets, change this if you want to expire all your assets
     config.assets.version = '3.3'
-    config.action_mailer.default_url_options = { :host => "tandetny" }
+    config.action_mailer.default_url_options = { :host => "opstat" }
   end
 end

@@ -7,5 +7,5 @@
      = link_to host.hostname, host, style: 'padding: 1px;'
     %td
      -host.plugins.sort_by{|t| t.type}.reverse.each do |plugin|
-      = link_to plugin.type, host_plugin_path(host['_id'],plugin['_id']), style: 'padding: 1px;'
+      = link_to_plugin_status plugin, {:link_description => :plugin_type}
       |

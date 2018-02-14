@@ -1,29 +1,45 @@
 class User
-  include MongoMapper::Document
-#  plugin MongoMapper::Devise
-  set_collection_name "opstat.users"
-  devise :database_authenticatable, :confirmable, :lockable, 
+  include Mongoid::Document
+  include Mongoid::Attributes::Dynamic
+  include Mongoid::Timestamps
+
+  store_in collection: "opstat.users"
+  #devise :database_authenticatable, :confirmable, :lockable, 
+  devise :database_authenticatable, :confirmable,
          :recoverable, :rememberable, :registerable, :trackable, 
          :timeoutable, :validatable
 
-  attr_accessible :name, :email, :password, :password_confirmation, :remember_me
-  key :password, String
-  key :encrypted_password, String
-  key :reset_password_token, String
-  key :reset_password_sent_at, Time
-  key :username, String
-  key :email, String
-  key :remember_created_at, Time
-  key :confirmation_token, String
-  key :confirmed_at, Time
-  key :locked_at, Time
-  key :current_sign_in_ip, String
-  key :last_sign_in_ip, String
-  key :sign_in_count, Integer
-  key :failed_attempts, Integer
-  key :current_sign_in_at, Time
-  key :last_sign_in_at, Time
-  key :confirmation_sent_at,Time
-  key :unconfirmed_email, Boolean
+#  attr_accessor :name, :email, :password, :password_confirmation, :remember_me
+  #field :password, type: String
+  field :username, type: String
+
+  ## Database authenticatable
+  field :email,              type: String, default: ""
+  field :encrypted_password, type: String, default: ""
+
+  ## Recoverable
+  field :reset_password_token,   type: String
+  field :reset_password_sent_at, type: Time
+
+  ## Rememberable
+  field :remember_created_at, type: Time
+
+  ## Trackable
+  field :sign_in_count,      type: Integer, default: 0
+  field :current_sign_in_at, type: Time
+  field :last_sign_in_at,    type: Time
+  field :current_sign_in_ip, type: String
+  field :last_sign_in_ip,    type: String
+
+  ## Confirmable
+  field :confirmation_token,   type: String
+  field :confirmed_at,         type: Time
+  field :confirmation_sent_at, type: Time
+  #field :unconfirmed_email,    type: String # Only if using reconfirmable
+
+  ## Lockable
+  field :failed_attempts, type: Integer, default: 0 # Only if lock strategy is :failed_attempts
+  field :unlock_token,    type: String # Only if unlock strategy is :email or :both
+  field :locked_at,       type: Time
 end
 

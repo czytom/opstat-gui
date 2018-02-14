@@ -3,10 +3,10 @@ development:
   database: opstat
   host: 127.0.0.1
   username: root
-  password: gfe%Q:+!
+  password: dEtV<jcg$6MQ
 production:
   adapter: mysql2
   database: opstat
   host: 127.0.0.1
   username: root
-  password: gfe%Q:+!
+  password: dEtV<jcg$6MQ

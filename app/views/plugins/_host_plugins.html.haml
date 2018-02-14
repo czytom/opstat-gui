@@ -4,4 +4,6 @@
  %div.panel-body
   - @host_plugins.each do |plugin| 
    = link_to plugin.type, plugin_path(plugin['_id'],:plugin => params['plugin'])
+   - unless plugin['interval'].nil? 
+    [interval: #{plugin['interval']}s]
    %br

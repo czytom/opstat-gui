@@ -1,8 +1,8 @@
 class Plugin 
-  include MongoMapper::Document
-  set_collection_name "opstat.plugins"
-  timestamps!
-  key :host_id
+  include Mongoid::Document
+  include Mongoid::Attributes::Dynamic
+  include Mongoid::Timestamps
+  store_in collection: "opstat.plugins"
   belongs_to :host
   attr_reader :model, :date_range, :date_range_start, :date_range_end
   attr_writer :start
@@ -30,18 +30,19 @@ class Plugin
   end
 
   def chart_data(params)
-    @date_range_start =  Time.now - 3600
-    @date_range_end =  Time.now
+    date_range_start =  Time.now - 3600
+    date_range_end =  Time.now
+    p params
     if params.has_key?('plugin')
       date_range = params['plugin']
       if date_range.has_key?('date_range_start')
-        @date_range_start = Time.parse(date_range['date_range_start']) 
+        date_range_start = Time.parse(date_range['date_range_start']) 
       end
       if date_range.has_key?('date_range_end')
-        @date_range_end = Time.parse(date_range['date_range_end']) 
+        date_range_end = Time.parse(date_range['date_range_end']) 
       end
     end
-    self.model.chart_data({:host_id => self.host_id, :start => @date_range_start, :end => @date_range_end, :plugin_id => self.id})
+    model.chart_data({:host_id => host_id, :start => date_range_start, :end => date_range_end, :plugin_id => id})
   end
 
   def axes_properties

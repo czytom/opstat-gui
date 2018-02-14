@@ -1,6 +1,7 @@
 defaults: &defaults
   host: 10.5.0.10
   port: 27017
+  op_timeout: 60
 
 development:
   <<: *defaults

@@ -1,6 +1,7 @@
 class Host
-  include MongoMapper::Document
-  set_collection_name "opstat.hosts"
-  many :plugins
-  timestamps!
+  include Mongoid::Document
+  include Mongoid::Attributes::Dynamic
+  include Mongoid::Timestamps
+  store_in collection: "opstat.hosts"
+  has_many :plugins
 end

@@ -1,8 +1,9 @@
 class Client
-  include MongoMapper::Document
-  set_collection_name "opstat.clients"
-  many :hosts
-  timestamps!
+  include Mongoid::Document
+  include Mongoid::Attributes::Dynamic
+  include Mongoid::Timestamps
+  store_in collection: "opstat.clients"
+  has_many :hosts
   attr_reader :model
   attr_writer :start
 

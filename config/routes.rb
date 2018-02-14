@@ -1,5 +1,5 @@
 OpstatGui::Application.routes.draw do
-  get "users/show"
+  #get "users/show"
 
   resources :hosts do
     resources :plugins
