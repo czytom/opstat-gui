@@ -32,6 +32,7 @@ class User
   field :last_sign_in_ip,    type: String
 
   ## Confirmable
+  field :unconfirmed_email,    type: String
   field :confirmation_token,   type: String
   field :confirmed_at,         type: Time
   field :confirmation_sent_at, type: Time

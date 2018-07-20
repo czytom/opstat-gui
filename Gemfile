@@ -45,6 +45,22 @@ gem 'haml-rails'
 gem 'font-awesome-rails'
 gem 'opstat-plugins', :git => 'git://github.com/czytom/opstat-plugins.git', :branch => 'develop'
 gem 'log4r'
+gem 'dotiw'
+
+group :development, :test do
+   gem 'rspec-rails'
+   gem "better_errors"
+   gem "binding_of_caller"
+end
+
+group :test do
+   gem 'capybara'
+   gem 'database_cleaner'
+   gem 'factory_girl_rails'
+   gem "mongoid-rspec"
+   gem 'mongo-fixture'
+end
+
 group :development do
    gem 'web-console'
 end

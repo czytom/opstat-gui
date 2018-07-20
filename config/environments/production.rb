@@ -70,6 +70,6 @@ OpstatGui::Application.configure do
     :email => {
       :email_prefix => "[Exception] ",
       :sender_address => %{"notifier" <notifier@optilabs.eu>},
-      :exception_recipients => %w{office@optilabs.eu}
+      :exception_recipients => %w{office@optilabs.eu msawczuk@ifirma.pl}
     }
 end
