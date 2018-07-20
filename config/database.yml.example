@@ -1,0 +1,19 @@
+development:
+  adapter: mysql2
+  database: opstat
+  host: 127.0.0.1
+  username: r
+  password: d
+production:
+  adapter: mysql2
+  database: opstat
+  host: 127.0.0.1
+  username: r
+  password: d
+test:
+  adapter: mysql2
+  database: opstat
+  host: 127.0.0.1
+  username: r
+  password: d
+
